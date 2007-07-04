@@ -1,0 +1,19 @@
+= Navigation Tags
+
+Provides basic navigation for your app. 
+
+<r:nav /> outputs a navigation list like: 
+
+  <div id="nav">
+    <ul>
+      <li><a href="/about/">About</a></li>
+      <li>
+        <a href="/blog/">Blog</a>
+        <ul>
+          <li class="current"><a href="/blog/2007/04/11/first-article-radiant-with-comments/">First Article-Radiant with Comments</a></li>
+
+          <li><a href="/blog/2007/04/11/second-article/">Second Article</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
