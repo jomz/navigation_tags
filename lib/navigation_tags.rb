@@ -15,10 +15,8 @@ module NavigationTags
     current_page = tag.locals.page
     child_page = tag.attr[:page]
     return if child_page.part("no-map") or child_page.virtual? or !child_page.published?
-    
     css_class = [("current" if current_page == child_page), ("has_children" if child_page.children.size > 0)].compact
-    
-    r = %{<li#{" class=\"#{css_class}\"" unless css_class.empty?}><a href="#{child_page.url}">#{child_page.breadcrumb}</a>}
+    r = %{<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}><a href="#{child_page.url}">#{child_page.breadcrumb}</a>}
     if child_page.children.size > 0 and current_page.url.starts_with?(child_page.url)
       r << "<ul>"
       child_page.children.each do |child|
