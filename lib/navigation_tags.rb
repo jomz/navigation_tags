@@ -1,16 +1,29 @@
 module NavigationTags
   include Radiant::Taggable
   
-  desc "Render a navigation menu. Walks down the directory tree, expanding the tree up to the current page."
+  desc %{Render a navigation menu. Walks down the directory tree, expanding the tree up to the current page.
+  
+   *Usage:*
+    <pre><code><r:nav [html_id="subnav"] [root=\"/products\"] [include_root=\"true\"] [depth=\"2\"]/></code></pre> 
+    
+    *Defaults:*
+    
+    html_id: defaults to "nav", becomes the HTML id attribute of the main ul
+    root: defaults to "/", where to start building the navigation from, you can i.e. use "/products" to build a subnav
+    include_root: defaults to false, set to true to include the root page
+    depth: defaults to 1, which means no sub-ul's
+  }
+    
   tag "nav" do |tag|
     root = Page.find_by_url(tag.attr['root'] || '/')
     depth = tag.attr['depth'] || 1
     include_root = tag.attr['include_root'] || false
+    html_id = tag.attr['html_id'] || 'nav'
     tree = include_root ? %{<li#{" class=\"current\"" if tag.locals.page == root}><a href="#{root.url}">#{root.breadcrumb}</a></li>} : ""
     for child in root.children
       tree << tag.render('sub-nav', {:page => child, :depth => depth.to_i - 1 })
     end
-    %{<ul>#{tree}</ul>}
+    %{<ul id="#{html_id}">#{tree}</ul>}
   end
   
   tag "sub-nav" do |tag|
