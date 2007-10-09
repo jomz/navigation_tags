@@ -3,10 +3,12 @@ module NavigationTags
   
   desc "Render a navigation menu. Walks down the directory tree, expanding the tree up to the current page."
   tag "nav" do |tag|
-    root = Page.find_by_url('/')
-    tree = %{<li#{" class=\"current\"" if tag.locals.page == root}><a href="#{root.url}">#{root.breadcrumb}</a></li>}
+    root = Page.find_by_url(tag.attr['root'] || '/')
+    depth = tag.attr['depth'] || 1
+    include_root = tag.attr['include_root'] || false
+    tree = include_root ? %{<li#{" class=\"current\"" if tag.locals.page == root}><a href="#{root.url}">#{root.breadcrumb}</a></li>} : ""
     for child in root.children
-      tree << tag.render('sub-nav', {:page => child})
+      tree << tag.render('sub-nav', {:page => child, :depth => depth.to_i - 1 })
     end
     %{<ul>#{tree}</ul>}
   end
@@ -17,10 +19,11 @@ module NavigationTags
     return if child_page.part("no-map") or child_page.virtual? or !child_page.published?
     css_class = [("current" if current_page == child_page), ("has_children" if child_page.children.size > 0)].compact
     r = %{<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}><a href="#{child_page.url}">#{child_page.breadcrumb}</a>}
-    if child_page.children.size > 0 and current_page.url.starts_with?(child_page.url)
+    published_children = child_page.children.delete_if{|c| c.part("no-map") }
+    if published_children.size > 0 and current_page.url.starts_with?(child_page.url) and tag.attr[:depth].to_i > 0
       r << "<ul>"
       child_page.children.each do |child|
-        r << tag.render('sub-nav', :page => child)
+        r << tag.render('sub-nav', :page => child, :depth => tag.attr[:depth].to_i )
       end
       r << "</ul>"
     end
@@ -30,6 +33,7 @@ module NavigationTags
   
   # Inspired by this thread: 
   # http://www.mail-archive.com/radiant@lists.radiantcms.org/msg03234.html
+  # Author: Marty Haught
   desc %{
     Renders the contained element if the current item is an ancestor of the current page or if it is the page itself. 
   }
