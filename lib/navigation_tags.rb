@@ -16,7 +16,7 @@ module NavigationTags
     
   tag "nav" do |tag|
     root = Page.find_by_url(tag.attr['root'] || '/')
-    depth = tag.attr['depth'] || 1
+    depth = tag.attr['depth'] || 2
     include_root = tag.attr['include_root'] || false
     html_id = tag.attr['html_id'] || 'nav'
     tree = include_root ? %{<li#{" class=\"current\"" if tag.locals.page == root}><a href="#{root.url}">#{root.breadcrumb}</a></li>} : ""

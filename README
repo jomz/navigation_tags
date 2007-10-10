@@ -37,7 +37,7 @@ Given this directory tree:
 * html_id: defaults to "nav", becomes the HTML id attribute of the main ul
 * root: defaults to "/", where to start building the navigation from, you can i.e. use "/products" to build a subnav
 * include_root: defaults to false, set to true to include the root page
-* depth: defaults to 1, which means no sub-ul's
+* depth: defaults to 2, which will print out the first two levels of pages. 
 
 = CREDITS
 
