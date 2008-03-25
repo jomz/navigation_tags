@@ -61,7 +61,7 @@ module NavigationTags
   }
   tag "if_self" do |tag|
     Page.benchmark "TAG: if_self - #{tag.locals.page.url}" do
-      tag.expand if tag.locals.page == tag.globals.actual_page
+      tag.expand if tag.locals.page == tag.globals.page
     end
   end
   
