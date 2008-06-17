@@ -2,8 +2,8 @@
 # require_dependency 'application'
 
 class NavigationTagsExtension < Radiant::Extension
-  version "1.0"
-  description "Describe your extension here"
+  version "2.0"
+  description "Makes building navigations much easier."
   url "http://yourwebsite.com/navigation_tags"
   
   # define_routes do |map|

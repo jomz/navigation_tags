@@ -1,43 +1,45 @@
 = Navigation Tags
 
 Provides hierarchical tree navigation based on Radiant's site structure. Outputs navigation in the form of an unordered list. 
-
 Automatically expands the hierarchy to reveal the current page and its siblings, and sets the class of the <li> for the current page to "current". 
 
 == Usage
 
-<div id="navigation_menu">
-  <r:nav [html_id="nav"] [root="/"] [include_root="false"] [depth="1"] />
-</div>
+  <r:nav [html_id="nav"] [root="/"] [include_root="false"] [depth="2"] [expand_all="true"] [ids_for_lis="true"]/>
 
-Given this directory tree: 
+  Given this directory tree: 
 
- * Home
- ** About
- *** Contact Us
- ** Blog
- *** First Article
- *** Second Article
+   * Home
+   ** About
+   *** Contact Us
+   ** Blog
+   *** First Article
+   *** Second Article
+   ** Catalogue
+   *** Spam
+   *** Ham
 
-<r:nav /> would output a navigation list like: 
+  <r:nav /> would output a navigation list like: 
 
-<ul id="nav">
-  <li><a href="/about/">About</a></li>
-  <li>
-    <a href="/blog/">Blog</a>
-    <ul>
-      <li class="current"><a href="/blog/2007/04/11/first-article-radiant-with-comments/">First Article</a></li>
-      <li><a href="/blog/2007/04/11/second-article/">Second Article</a></li>
-    </ul>
-  </li>
-</ul>
+  <ul id="nav">
+    <li class="parent_of_current has_children"><a href="/about/">About</a>
+      <ul>
+        <li class="current"><a href="/about/contact">Contact Us</a></li>
+      </ul>
+    </li>
+    <li class="has_children"><a href="/blog/">Blog</a></li>
+    <li class="has_children"><a href="/catalogue">Catalogue</a></li>
+  </ul>
 
-== Available tag attributes:
+  == Available tag attributes:
 
-* html_id: defaults to "nav", becomes the HTML id attribute of the main ul
-* root: defaults to "/", where to start building the navigation from, you can i.e. use "/products" to build a subnav
-* include_root: defaults to false, set to true to include the root page
-* depth: defaults to 2, which will print out the first two levels of pages. 
+  * id: 		defaults to "nav", 			becomes the HTML id attribute of the main ul
+  * ids_for_lis: 	defaults to false, 			enable this to give each li an id (it's slug)
+  * class: 	defaults to none, 			allows to give the ul one or many classes
+  * root: 		defaults to "/", 	which page to start building the navigation from
+  * include_root: defaults to false, 			set to true to include the root page (i.e. Home)
+  * depth: 		defaults to 2,				which will print out the first two levels of pages.
+  * expand_all: 	defaults to false, 			enable this to have all li's create sub-ul's of their children, i.o. only the currently active li
 
 = CREDITS
 
