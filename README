@@ -1,7 +1,6 @@
 = Navigation Tags
 
-Provides hierarchical tree navigation based on Radiant's site structure. Outputs navigation in the form of an unordered list. 
-Automatically expands the hierarchy to reveal the current page and its siblings, and sets the class of the <li> for the current page to "current". 
+Provides hierarchical tree navigation based on Radiant's site structure. Outputs navigation in the form of a -very flexible and CSS'able- unordered list. Also provides r:if_self and r:if_ancestor_or_self
 
 == Usage
 
