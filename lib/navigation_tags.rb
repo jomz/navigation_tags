@@ -9,13 +9,13 @@ module NavigationTags
     <pre><code><r:nav [html_id="subnav"] [root=\"/products\"] [include_root=\"true\"] [depth=\"2\"] [expand_all=\"true\"]/></code></pre> 
     *Attributes:*
     
-    html_id: defaults to none, becomes the HTML id attribute of the main ul
-    ids_for_lis: defaults to false, enable this to give each li an id (it's slug)
-    html_class: defaults to none, allows to give the ul one or many classes
     root: defaults to "/", where to start building the navigation from, you can i.e. use "/products" to build a subnav
-    include_root: defaults to false, set to true to include the root page
-    depth: defaults to 1, which means no sub-ul's
+    include_root: defaults to false, set to true to include the root page (i.e. Home)
+    ids_for_lis: defaults to false, enable this to give each li an id (it's slug)
+    
+    depth: defaults to 1, which means no sub-ul's, set to 2 or more for a nested list
     expand_all: defaults to false, enable this to have all li's create sub-ul's of their children, i.o. only the currently active li
+    id, class,..: go as html attributes of the outer ul
   }
     
   tag "nav" do |tag|
