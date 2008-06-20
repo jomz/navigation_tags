@@ -31,7 +31,8 @@ module NavigationTags
     if @include_root
       css_class = [("current" if tag.locals.page == root), "first"].compact
       @first_set = true
-      tree = %{<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}#{" id=\"" + root.slug + "\"" if @ids_for_lis}><a href="#{root.url}">#{escape_once(root.breadcrumb)}</a></li>\n}
+      tree = %{<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}#{" id=\"" +
+        (root.slug == "/" ? 'home' : root.slug) + "\"" if @ids_for_lis}><a href="#{root.url}">#{escape_once(root.breadcrumb)}</a></li>\n}
     else
       tree = ""
     end
