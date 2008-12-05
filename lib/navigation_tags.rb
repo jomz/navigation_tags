@@ -1,5 +1,6 @@
 module NavigationTags
   include Radiant::Taggable
+  include ActionView::Helpers::TagHelper
   
   class NavTagError < StandardError; end
   
