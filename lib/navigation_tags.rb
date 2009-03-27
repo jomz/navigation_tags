@@ -33,7 +33,7 @@ module NavigationTags
     if @include_root
       css_class = [("current" if tag.locals.page == root), "first"].compact
       @first_set = true
-      url = (defined?(SiteLanguage)  && SiteLanguage.count > 0) ? "/#{Locale.language.code}#{root.url}" : root.url
+      url = (defined?(SiteLanguage)  && SiteLanguage.count > 0) ? "/#{I18n.locale.to_s}#{root.url}" : root.url
       tree = %{<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}#{" id=\"" +
         (root.slug == "/" ? 'home' : root.slug) + "\"" if @ids_for_lis}><a href="#{url}"#{" id=\"link_" + (root.slug == "/" ? 'home' : root.slug) + "\"" if @ids_for_links}>#{escape_once(root.breadcrumb)}</a></li>\n}
     else
@@ -67,7 +67,7 @@ module NavigationTags
       css_class << 'first'
       @first_set = true
     end
-    url = (defined?(SiteLanguage)  && SiteLanguage.count > 0) ? "/#{Locale.language.code}#{child_page.url}" : child_page.url
+    url = (defined?(SiteLanguage)  && SiteLanguage.count > 0) ? "/#{I18n.locale.to_s.code}#{child_page.url}" : child_page.url
     r = %{\t<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}#{" id=\"nav_" + child_page.slug + "\"" if @ids_for_lis}>
     <a href="#{url}"#{" id=\"link_" + (child_page.slug == "/" ? 'home' : child_page.slug) + "\"" if @ids_for_links}>#{escape_once(child_page.breadcrumb)}</a>}
     published_children = child_page.children.delete_if{|c| c.part("no-map") || !c.published? }
