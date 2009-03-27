@@ -67,7 +67,7 @@ module NavigationTags
       css_class << 'first'
       @first_set = true
     end
-    url = (defined?(SiteLanguage)  && SiteLanguage.count > 0) ? "/#{I18n.locale.to_s.code}#{child_page.url}" : child_page.url
+    url = (defined?(SiteLanguage)  && SiteLanguage.count > 0) ? "/#{I18n.locale.to_s}#{child_page.url}" : child_page.url
     r = %{\t<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}#{" id=\"nav_" + child_page.slug + "\"" if @ids_for_lis}>
     <a href="#{url}"#{" id=\"link_" + (child_page.slug == "/" ? 'home' : child_page.slug) + "\"" if @ids_for_links}>#{escape_once(child_page.breadcrumb)}</a>}
     published_children = child_page.children.delete_if{|c| c.part("no-map") || !c.published? }
