@@ -21,9 +21,19 @@ module NavigationTags
   }
     
   tag "nav" do |tag|
-    root = Page.find_by_url(root_url = tag.attr.delete('root') || "/")
-    
-    raise NavTagError, "No page found at \"#{root_url}\" to build navigation from." if root.class_name.eql?('FileNotFoundPage')
+    root_url = tag.attr.delete('root') || "/"
+    root = Page.find_by_url(root_url)
+        
+    if root.class_name.eql?('FileNotFoundPage')
+      current_language = I18n.locale
+      SiteLanguage.all.each do |language|
+        I18n.locale = language
+        root = Page.find_by_url(root_url)
+        break unless root.class_name.eql?('FileNotFoundPage')
+      end
+      I18n.locale = current_language
+      raise NavTagError, "No page found at \"#{root_url}\" to build navigation from." if root.class_name.eql?('FileNotFoundPage')
+    end
     
     depth = tag.attr.delete('depth') || 1
     ['include_root', 'ids_for_lis', 'ids_for_links', 'expand_all', 'first_set'].each do |prop|
@@ -33,7 +43,7 @@ module NavigationTags
     if @include_root
       css_class = [("current" if tag.locals.page == root), "first"].compact
       @first_set = true
-      url = (defined?(SiteLanguage)  && SiteLanguage.count > 0) ? "/#{I18n.locale.to_s}#{root.url}" : root.url
+      url = SiteLanguage.count > 0 ? "/#{I18n.locale.to_s}#{root.url}" : root.url
       tree = %{<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}#{" id=\"" +
         (root.slug == "/" ? 'home' : root.slug) + "\"" if @ids_for_lis}><a href="#{url}"#{" id=\"link_" + (root.slug == "/" ? 'home' : root.slug) + "\"" if @ids_for_links}>#{escape_once(root.breadcrumb)}</a></li>\n}
     else
@@ -67,7 +77,7 @@ module NavigationTags
       css_class << 'first'
       @first_set = true
     end
-    url = (defined?(SiteLanguage)  && SiteLanguage.count > 0) ? "/#{I18n.locale.to_s}#{child_page.url}" : child_page.url
+    url = SiteLanguage.count > 0 ? "/#{I18n.locale.to_s}#{child_page.url}" : child_page.url
     r = %{\t<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}#{" id=\"nav_" + child_page.slug + "\"" if @ids_for_lis}>
     <a href="#{url}"#{" id=\"link_" + (child_page.slug == "/" ? 'home' : child_page.slug) + "\"" if @ids_for_links}>#{escape_once(child_page.breadcrumb)}</a>}
     published_children = child_page.children.delete_if{|c| c.part("no-map") || !c.published? }
