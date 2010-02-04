@@ -33,7 +33,7 @@ module NavigationTags
     if @include_root
       css_class = [("current" if tag.locals.page == root), "first"].compact
       @first_set = true
-      tree = %{<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}#{" id=\"" +
+      tree = %{<li#{" class=\"#{css_class.join(" ")}\""}#{" id=\"" +
         (root.slug == "/" ? 'home' : root.slug) + "\"" if @ids_for_lis}><a href="#{root.url}"#{" id=\"link_" + (root.slug == "/" ? 'home' : root.slug) + "\"" if @ids_for_links}>#{escape_once(root.breadcrumb)}</a></li>\n}
     else
       tree = ""
@@ -61,18 +61,27 @@ module NavigationTags
     child_page = tag.attr[:page]
     depth = tag.attr[:depth]
     return if child_page.part("no-map") or child_page.virtual? or !child_page.published? or child_page.class_name.eql? "FileNotFoundPage"
-    css_class = [("current" if current_page == child_page), ("has_children" if child_page.children.size > 0), ("parent_of_current" if current_page.url.starts_with?(child_page.url) and current_page != child_page)].compact
+    css_class = [
+      ("current" if current_page == child_page),
+      ("has_children" if child_page.children.size > 0),
+      ("parent_of_current" if current_page.url.starts_with?(child_page.url) and current_page != child_page)
+    ]
     if !@first_set
       css_class << 'first'
       @first_set = true
     end
+    if !@sub_first_set
+      css_class << 'first'
+      @sub_first_set = true
+    end
     url = child_page.url
-    r = %{\t<li#{" class=\"#{css_class.join(" ")}\"" unless css_class.empty?}#{" id=\"nav_" + child_page.slug + "\"" if @ids_for_lis}>
+    r = %{\t<li#{" class=\"#{css_class.compact.join(" ")}\"" unless css_class.empty?}#{" id=\"nav_" + child_page.slug + "\"" if @ids_for_lis}>
     <a href="#{url}"#{" id=\"link_" + (child_page.slug == "/" ? 'home' : child_page.slug) + "\"" if @ids_for_links}>#{escape_once(child_page.breadcrumb)}</a>}
     published_children = child_page.children.delete_if{|c| c.part("no-map") || !c.published? }
     if published_children.size > 0 and depth.to_i > 0 and 
         child_page.class_name != 'ArchivePage' and 
         (@expand_all || current_page.url.starts_with?(child_page.url) )
+      @sub_first_set = false
       r << "<ul>\n"
       child_page.children.each do |child|
         r << tag.render('sub-nav', :page => child, :depth => depth.to_i - 1 )
