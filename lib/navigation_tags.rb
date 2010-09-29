@@ -102,7 +102,7 @@ module NavigationTags
   }
   tag "if_ancestor_or_self" do |tag|
     Page.benchmark "TAG: if_ancestor_or_self - #{tag.locals.page.url}" do
-      tag.expand if tag.globals.actual_page.url.starts_with?(tag.locals.page.url)
+      tag.expand if tag.globals.page.url.starts_with?(tag.locals.page.url)
     end
   end
 
