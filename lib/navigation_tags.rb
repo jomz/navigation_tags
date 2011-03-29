@@ -131,9 +131,5 @@ module NavigationTags
       "<a href=\"#{page.url}\">#{escape_once(page.breadcrumb)}</a>"
     end
   end
-  
-  def id_for_link page
-    ' id="link_' + (child_page.slug == "/" ? 'home' : child_page.slug) + '"' if @ids_for_links
-  end
 
 end
