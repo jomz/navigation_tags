@@ -24,6 +24,8 @@ module NavigationTags
   tag "nav" do |tag|
     if tag.double?
       root = Page.find_by_path(tag.expand)
+    elsif defined?(Globalize2Extension) && Globalize2Extension.locales.size <= 1
+      root = Page.find_by_path(root_url = tag.attr.delete('root') || "/#{I18n.locale}")
     else
       root = Page.find_by_path(root_url = tag.attr.delete('root') || "/")
     end
