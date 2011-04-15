@@ -77,21 +77,21 @@ module NavigationTags
   tag "sub-nav" do |tag|
     current_page = tag.locals.page
     child_page = tag.attr[:page]
-    @depth ||= tag.attr.delete(:depth)
+    depth = tag.attr.delete(:depth)
     @first_set ||= tag.attr.delete(:first_set)
-    return if @depth < 0 or child_page.virtual? or !child_page.published? or child_page.class_name.eql? "FileNotFoundPage" or child_page.part("no-map")
+    return if depth.to_i < 0 or child_page.virtual? or !child_page.published? or child_page.class_name.eql? "FileNotFoundPage" or child_page.part("no-map")
     
     r = %{<li#{li_attrs_for_current_page_vs_navigation_item(current_page, child_page)}>
       #{link_for_page(child_page)}\n}
       # mind the open li
     rr = ""
     if child_page.children.size > 0 and 
-        @depth.to_i > 0 and
+        depth.to_i > 0 and
         child_page.class_name != 'ArchivePage' and
         (@expand_all || current_page.url.starts_with?(child_page.url) )
       @first_set = false
       child_page.children.each do |child|
-        rr << tag.render('sub-nav', :page => child, :depth => @depth.to_i - 1, :first_set => @first_set ) unless child.part("no-map") || !child.published?
+        rr << tag.render('sub-nav', :page => child, :depth => depth.to_i - 1, :first_set => @first_set ) unless child.part("no-map") || !child.published?
       end
       
       r << "<ul>\n" + rr + "</ul>\n" unless rr.empty?
