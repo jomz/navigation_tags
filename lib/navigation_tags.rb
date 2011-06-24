@@ -100,15 +100,11 @@ module NavigationTags
   end
 
   def li_attrs_for_current_page_vs_navigation_item current_page, child_page
-    classes = [
-      ("current" if current_page == child_page),
-      ("has_children" if child_page.children.size > 0),
-      ("parent_of_current" if current_page.url.starts_with?(child_page.url) and current_page != child_page)
-    ]
-    if !@first_set
-      classes << "first"
-      @first_set = true
-    end
+    classes = []
+    classes << "current" if current_page == child_page
+    classes << "has_children" if child_page.children.size > 0
+    classes << "parent_of_current" if !child_page.parent.nil? and current_page.url.starts_with?(child_page.url) and current_page != child_page
+    (classes << "first" && @first_set = true) unless @first_set
     
     result = ""
     if classes.any?
