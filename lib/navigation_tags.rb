@@ -7,7 +7,7 @@ module NavigationTags
   desc %{Render a navigation menu. Walks down the directory tree, expanding the tree up to the current page.
 
     *Usage:*
-    <pre><code><r:nav [id="subnav"] [root=\"/products\"] [append_urls=\"/,/about-us/contact\"] [depth=\"2\"] [expand_all=\"true\"]/></code></pre> 
+    <pre><code><r:nav [id="subnav"] [root=\"/products\"] [append_urls=\"/,/about-us/contact\"] [labels=\"/:Home,/about-us/contact:Contact us\"] [depth=\"2\"] [expand_all=\"true\"]/></code></pre> 
     *Attributes:*
 
     root: defaults to "/", where to start building the navigation from, you can i.e. use "/products" to build a subnav
@@ -16,6 +16,7 @@ module NavigationTags
     ids_for_lis: defaults to false, enable this to give each li an id (it's slug prefixed with nav_)
     ids_for_links: defaults to false, enable this to give each link an id (it's slug prefixed with nav_)
 
+    labels: defaults to nil, use to overwrite the link text for given pages, otherwise the breadcrumb is used.
     depth: defaults to 1, which means no sub-ul's, set to 2 or more for a nested list
     expand_all: defaults to false, enable this to have all li's create sub-ul's of their children, i.o. only the currently active li
     id, class,..: go as html attributes of the outer ul
@@ -25,7 +26,7 @@ module NavigationTags
     if tag.double?
       root = Page.find_by_path(tag.expand)
     elsif defined?(Globalize2Extension) && Globalize2Extension.locales.size <= 1
-      root = Page.find_by_path(root_url = tag.attr.delete('root') || "/#{I18n.locale}")
+      root = Page.find_by_path(root_url = tag.attr.delete('root') || "/#{I18n.locale}/")
     else
       root = Page.find_by_path(root_url = tag.attr.delete('root') || "/")
     end
@@ -33,7 +34,7 @@ module NavigationTags
     raise NavTagError, "No page found at \"#{root_url}\" to build navigation from." if root.class_name.eql?('FileNotFoundPage')
 
     depth = tag.attr.delete('depth') || 1
-    ['ids_for_lis', 'ids_for_links', 'expand_all', 'first_set', 'prepend_urls', 'append_urls'].each do |prop|
+    ['ids_for_lis', 'ids_for_links', 'expand_all', 'first_set', 'prepend_urls', 'append_urls', 'labels'].each do |prop|
       eval "@#{prop} = tag.attr.delete('#{prop}') || false"
     end
     
@@ -122,9 +123,18 @@ module NavigationTags
   
   def link_for_page page
     if @ids_for_links
-      "<a href=\"#{page.url}\" id=\"#{("link_" + (page.slug == "/" ? 'home' : page.slug))}\">#{escape_once(page.breadcrumb)}</a>"
+      "<a href=\"#{page.url}\" id=\"#{("link_" + (page.slug == "/" ? 'home' : page.slug))}\">#{label_for_page(page)}</a>"
     else
-      "<a href=\"#{page.url}\">#{escape_once(page.breadcrumb)}</a>"
+      "<a href=\"#{page.url}\">#{label_for_page(page)}</a>"
+    end
+  end
+  
+  def label_for_page page
+    # labels="/:Home,/portfolio:Our work"
+    if @labels && matched_label = @labels.split(',').select{|l| l.split(':').first == page.path}.first.split(":").last
+      escape_once(matched_label)
+    else
+      escape_once(page.breadcrumb)
     end
   end
 
