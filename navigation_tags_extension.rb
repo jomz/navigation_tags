@@ -1,8 +1,8 @@
-require "navigation_tags_extension"
+require "radiant-navigation_tags-extension"
 class NavigationTagsExtension < Radiant::Extension
-  version     NavigationTagsExtension::VERSION
-  description NavigationTagsExtension::DESCRIPTION
-  url         NavigationTagsExtension::URL
+  version     RadiantNavigationTagsExtension::VERSION
+  description RadiantNavigationTagsExtension::DESCRIPTION
+  url         RadiantNavigationTagsExtension::URL
     
   def activate
     Page.send :include, NavigationTags

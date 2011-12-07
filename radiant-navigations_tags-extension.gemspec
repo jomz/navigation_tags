@@ -1,16 +1,16 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "navigation_tags_extension"
+require "radiant-navigation_tags-extension"
 
 Gem::Specification.new do |s|
   s.name        = "radiant-navigation_tags-extension"
-  s.version     = NavigationTagsExtension::VERSION
+  s.version     = RadiantNavigationTagsExtension::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = NavigationTagsExtension::AUTHORS
-  s.email       = NavigationTagsExtension::EMAIL
-  s.homepage    = NavigationTagsExtension::URL
-  s.summary     = NavigationTagsExtension::SUMMARY
-  s.description = NavigationTagsExtension::DESCRIPTION
+  s.authors     = RadiantNavigationTagsExtension::AUTHORS
+  s.email       = RadiantNavigationTagsExtension::EMAIL
+  s.homepage    = RadiantNavigationTagsExtension::URL
+  s.summary     = RadiantNavigationTagsExtension::SUMMARY
+  s.description = RadiantNavigationTagsExtension::DESCRIPTION
 
   ignores = if File.exist?('.gitignore')
     File.read('.gitignore').split("\n").inject([]) {|a,p| a + Dir[p] }
