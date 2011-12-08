@@ -131,7 +131,7 @@ module NavigationTags
   
   def label_for_page page
     # labels="/:Home,/portfolio:Our work"
-    if @labels && matched_label = @labels.split(',').select{|l| l.split(':').first == page.path}.first.split(":").last
+    if @labels && matched_label = @labels.split(',').select{|l| l.split(':').first == page.path}.first.try(:split, ':').try(:last)
       escape_once(matched_label)
     else
       escape_once(page.breadcrumb)
