@@ -123,9 +123,9 @@ module NavigationTags
   
   def link_for_page page
     if @ids_for_links
-      "<a href=\"#{page.url}\" id=\"#{("link_" + (page.slug == "/" ? 'home' : page.slug))}\">#{label_for_page(page)}</a>"
+      "<a href=\"#{page.path}\" id=\"#{("link_" + (page.slug == "/" ? 'home' : page.slug))}\">#{label_for_page(page)}</a>"
     else
-      "<a href=\"#{page.url}\">#{label_for_page(page)}</a>"
+      "<a href=\"#{page.path}\">#{label_for_page(page)}</a>"
     end
   end
   
