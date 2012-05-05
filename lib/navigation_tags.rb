@@ -10,16 +10,23 @@ module NavigationTags
     <pre><code><r:nav [id="subnav"] [root=\"/products\"] [append_urls=\"/,/about-us/contact\"] [labels=\"/:Home,/about-us/contact:Contact us\"] [depth=\"2\"] [expand_all=\"true\"]/></code></pre> 
     *Attributes:*
 
-    root: defaults to "/", where to start building the navigation from, you can i.e. use "/products" to build a subnav
-    append_urls: urls of pages to add to the end of the navigation ul seperated by a comma
-    prepend_urls: urls of pages to add to the beginning of the navigation ul seperated by a comma
-    ids_for_lis: defaults to false, enable this to give each li an id (it's slug prefixed with nav_)
-    ids_for_links: defaults to false, enable this to give each link an id (it's slug prefixed with nav_)
+    *root*: defaults to "/", where to start building the navigation from, you can i.e. use "/products" to build a subnav
 
-    labels: defaults to nil, use to overwrite the link text for given pages, otherwise the breadcrumb is used.
-    depth: defaults to 1, which means no sub-ul's, set to 2 or more for a nested list
-    expand_all: defaults to false, enable this to have all li's create sub-ul's of their children, i.o. only the currently active li
-    id, class,..: go as html attributes of the outer ul
+    *append_urls*: urls of pages to add to the end of the navigation ul seperated by a comma. For external links, you can provide a label text after the link with a semicolon. E.g. append_urls="/,http://example.com;Other site"
+
+    *prepend_urls*: urls of pages to add to the beginning of the navigation ul seperated by a comma. For external links, you can provide a label text after the link with a semicolon. E.g. prepend_urls="/,http://example.com;Other site"
+
+    *ids_for_lis*: defaults to false, enable this to give each li an id (it's slug prefixed with nav_)
+
+    *ids_for_links*: defaults to false, enable this to give each link an id (it's slug prefixed with nav_)
+
+    *labels*: defaults to nil, use to overwrite the link text for given pages, otherwise the breadcrumb is used.
+
+    *depth*: defaults to 1, which means no sub-ul's, set to 2 or more for a nested list
+
+    *expand_all*: defaults to false, enable this to have all li's create sub-ul's of their children, i.o. only the currently active li
+
+    *id, class,..*: go as html attributes of the outer ul
   }
 
   tag "nav" do |tag|
@@ -45,6 +52,8 @@ module NavigationTags
         page = Page.find_by_path(url)
         if page.class_name != "FileNotFoundPage"
           lis << li_for_current_page_vs_navigation_item(tag.locals.page, page)
+        else
+          lis << li_for_external_link(url)
         end
       end
     end
@@ -58,6 +67,8 @@ module NavigationTags
         page = Page.find_by_path(url)
         if page.class_name != "FileNotFoundPage"
           lis << li_for_current_page_vs_navigation_item(tag.locals.page, page)
+        else
+          lis << li_for_external_link(url)
         end
       end
     end
@@ -119,6 +130,32 @@ module NavigationTags
   
   def li_for_current_page_vs_navigation_item current_page, child_page
     "<li#{li_attrs_for_current_page_vs_navigation_item(current_page, child_page)}>#{link_for_page(child_page)}</li>"
+  end
+  
+  def li_attrs_for_external_link link, label
+    classes = ["external"]
+    (classes << "first" && @first_set = true) unless @first_set
+    result = " class=\"#{classes.compact.join(" ")}\""
+    if @ids_for_lis
+      result << " id=\"nav_" + label.slugify + "\""
+    end
+  end
+  
+  def li_for_external_link link
+    if @labels && 
+      matched_label = @labels.split(',').map{|l| l[0..6] == 'http://' ? l[7..-1] : l }.select{|l| l.split(':').first == link}.first.try(:split, ':').try(:last)
+    else
+      matched_label = link[0..6] == 'http://' ? link[7..-1] : link
+    end
+    "<li#{li_attrs_for_external_link(link, matched_label)}>#{external_link(link, matched_label)}</li>"
+  end
+  
+  def external_link link, label
+    if @ids_for_links
+      "<a href=\"#{link}\" id=\"link_#{ label.slugify }\">#{label}</a>"
+    else
+      "<a href=\"#{link}\">#{label}</a>"
+    end
   end
   
   def link_for_page page
